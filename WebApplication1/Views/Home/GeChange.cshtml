@@ -1,0 +1,179 @@
+﻿
+@{
+    ViewBag.Title = "GeChange";
+}
+
+<h2>GeChange</h2>
+
+
+@*@Html.BeginForm("GeChange", "Home", new { Id = "GeChange" }, FormMethod.Post, new { enctype = "multipart/form-data" })
+    {*@
+<div class="container">
+    <table class="table table-responsive">
+        <tbody>
+            <tr>
+                <td>Coin Value1 </td>
+                <td>
+                </td>
+                <td>
+                    <input type="number" id="txtcoin1" min="0"/>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td>Coin Value2 </td>
+                <td>
+                </td>
+                <td>
+                    <input type="number" id="txtcoin2" min="0" />
+                </td>
+            </tr>
+
+
+            <tr>
+                <td>Coin Value3 </td>
+                <td>
+                </td>
+                <td>
+                    <input type="number" id="txtcoin3" min="0"/>
+                </td>
+            </tr>
+
+
+
+
+            <tr>
+                <td>
+                    Payout Amount
+                </td>
+                <td>
+                </td>
+                <td>
+                    <input type="number" id="txtamt" min="0" />
+                </td>
+            </tr>
+
+
+            <tr>
+                <td>
+                    Minimum coins combinations is:
+                </td>
+                <td>
+                </td>
+                <td>
+                    <input type="text" id="txttot" />
+                </td>
+            </tr>
+
+
+
+            <tr>
+                <td>
+                    <a id="btntest" href="#" class="bg-primary">Get Change</a>
+                </td>
+                <td>
+                    <a href="#" class="bg-danger" id="btnreset">Reset..</a>
+                </td>
+
+            </tr>
+
+
+
+
+
+        </tbody>
+
+    </table>
+</div>
+
+@*}*@
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+
+
+
+
+
+        $('#btntest').click(function () {
+
+            // validate for no entries so that we have a value to make use of
+            if ($('#txtcoin1').val().length == 0) {
+                alert('Please enter coin1 denomination value');
+                return;
+            }
+
+            if ($('#txtcoin2').val().length == 0) {
+                alert('Please enter coin2 denomination value');
+                return;
+            }
+
+            if ($('#txtcoin3').val().length == 0) {
+                alert('Please enter coin3 denomination value');
+                return;
+            }
+
+            if ($('#txtamt').val().length == 0) {
+                alert('Please enter Pay out amount');
+                return;
+            }
+
+            var _formdata = new FormData();
+
+            _formdata.append('Amount', $('#txtamt').val());
+            _formdata.append('v1', $('#txtcoin1').val());
+            _formdata.append('v2', $('#txtcoin2').val());
+            _formdata.append('v3', $('#txtcoin3').val());
+            //make ajax call
+            $.ajax({
+                url: '/Home/GePayoutChange',
+                type: "POST",
+                contentType: false, // Not to set any content header
+                processData: false, // Not to process data
+                data: _formdata,
+                success: function (result) {
+                    if (result != '') {
+
+                        if (parseInt(result) > 0) {
+                            //alert(result);
+                            $('#txttot').val(result);
+                        }
+                        else {
+                            Alert("No minimum coin change found");
+                        }
+
+                    }
+                    else {
+                        alert('An error occured while sending feedback message');
+                    }
+                },
+                error: function (err) {
+                    alert(err.statusText);
+                }
+            });
+
+
+
+
+
+
+        })
+
+
+        $('#btnreset').click(function () {
+            $('#txttot').val('');
+
+        })
+
+
+
+
+    </script>
+
+
+
+
+}
